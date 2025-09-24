@@ -1,0 +1,92 @@
+// MIDI from https://onlinesequencer.net/378526
+// Converted to Strudel with https://github.com/Emanuel-de-Jong/MIDI-To-Strudel
+// Synth emulation from https://alijamieson.co.uk/2015/04/09/chord-of-the-day-everything-in-its-right-place/
+// "The sound is a single sawtooth oscillator with the filter cutoff turned to around 100 Hz.
+//  There’s no resonance or envelope modulation, however turn the keyboard tracking up to maximum.
+//  Set the amplitude envelope to have a short attack, a decay of about 450 ms, turn the sustain
+//  to half way and use a release of about 1500 ms."
+// Other info from https://www.attackmagazine.com/technique/recreate-radiohead-everything-in-its-right-place/
+
+register('rlpf', (x,pat) => {return pat.lpf(pure(x).mul(12).pow(4))})
+setGainCurve(x => Math.pow(x,2))
+setCpm(120/4)
+
+$: stack(
+  s("bd:1").beat("0,7?,10",16).duck("3:4:5"),
+  s("sd:2").beat("4,12",16),
+  s("hh:4!8")
+)
+  .fast(1.42)
+  .gain(.6)
+  .lpf(2600)
+  .lpq("<0 4 8 12 16>")
+  ._punchcard()
+
+$bass: s("supersaw!8")
+  .fast(1.42)
+  .gain(.8)
+  .note("<[c4,c4] g#3 g3 c3>/2".sub(16)).orbit(3)
+  .rlpf(slider(0.564)).lpenv("2")
+  ._punchcard()
+  ._scope()
+
+_$: note(`<
+    [[c4,c4] g#3 g3 c3 [e3,c4,c2,g2,c3,c4] - - [c3,e3,c4,c2,g2,c4]] [- [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4] - [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,d#2,c4]] [- [f3,c4,d#2,c4] d#3 f3 [c4,c4] a#3 [c4,c4] g2] [[c3,e3,c4,c2,c4] - - [c3,e3,c4,c2,g2,c4] - [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4]]
+    [- [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,d#2,c4] - [f3,c4,d#2,c4] d#3 f3] [[c4,c4] g#3 g3 g2 [c3,e3,c4,c2,e3,c4] - - [c3,e3,c4,c2,g2,c4]] [- [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4] - [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,c4,d#2]] [- [f3,c4,c4,d#2] d#3 f3 [c4,c4] a#3 c4 g2]
+    [[c3,e3,c4,c2,c4] - - [c3,e3,c4,c2,g2,c4] - [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4]] [- [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,d#2,c4] - [f3,c4,d#2,c4] d#3 f3] [[c4,c4] g#3 g3 g2 [c3,e3,c4,c2,c4] - - [c3,e3,c4,c2,g2,c4]] [- [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4] - [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,d#2,c4]]
+    [- [f3,c4,d#2,c4] d#3 f3 [c4,c4] a#3 c4 g2] [[c3,c4,c2,e3,c4] - - [c3,e3,c4,c2,g2,c4] - [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4]] [- [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,d#2,c4] - [f3,c4,d#2,c4] d#3 f3] [[c4,c4] g#3 g3 g2 [c3,c4,c2,e3,c4] - - [c3,e3,c4,c2,g2,c4]]
+    [- [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4] - [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,d#2,c4]] [- [f3,c4,d#2,c4] d#3 f3 [c4,c4] a#3 [c4,c4] -] [[c3,f3,c4,f2,c4,a3] - - [c3,e3,c4,c2,c4,g2,g3] - [c3,e3,c4,c2,g2,c4,g3] - [c#3,f3,c#2,c4,c4,g#2]] [- [c#3,f3,c4,c#2,c4,g#2] - [d#3,g3,c4,d#2,c4,a#2] - [c4,d#2,c4,f3] d#3 f3]
+    [[c4,c4] a#3 [c4,c4] - [c3,f3,c4,f2,c4,a3] - - [c3,e3,c4,c2,c4,g2,g3,g3]] [- [c3,e3,c4,c2,g2,c4,g3] - [c#3,f3,c#2,c4,c4,g#2] - [c#3,f3,c4,c#2,c4,g#2] - [d#3,g3,c4,d#2,c4,a#2]] [- [c4,d#2,c4,f3] d#3 f3 [c4,c4] [c4,c4] - -] [[c3,f3,c4,f2,c4,a3] - - [c3,e3,c4,c2,c4,g2,g3,g3] - [c3,e3,c4,c2,g2,c4,g3] - [c#3,f3,c#2,c4,c4,g#2]]
+    [- [c#3,f3,c4,c#2,c4,g#2] - [d#3,g3,c4,d#2,c4,a#2] - [c4,d#2,c4,f3] d#3 f3] [[c4,c4] a#3 [c4,c4] - [c3,f3,c4,f2,c4,a3] - - [c3,e3,c4,c2,c4,g2,g3,g3]] [- [c3,e3,c4,c2,g2,c4,g3] - [c#3,f3,c#2,c4,c4,g#2] - [c#3,f3,c4,c#2,c4,g#2] - [d#3,g3,c4,d#2,c4,a#2]] [- [c4,d#2,c4,f3] d#3 f3 [c4,c4] g#3 g3 g2]
+    [[c3,c4,c2,e3,c4] - - [c3,e3,c4,c2,g2,c4] - [c3,e3,c4,c2,g2,c4] - [c#3,f3,c4,c#2,c4,c4,c4]] [- [c#3,f3,c#2] - [d#3,g3,c4,d#2,c4] - [f3,c4,d#2,c4] d#3 f3] [[c4,c4] g#3 g3 g2 [c3,c4,c2,e3,c4] - - [c3,e3,c4,c2,g2,c4]] [- [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4] - [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,d#2,c4]]
+    [- [f3,c4,d#2,c4] d#3 f3 [c4,c4] g#3 g3 g2] [[c3,c4,c2,e3,c4] - - [c3,e3,c4,c2,g2,c4] - [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4]] [- [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,d#2,c4] - [f3,c4,d#2,c4] d#3 f3] [[c4,c4] g#3 g3 g2 [c3,c4,c2,e3,c4] - - [c3,e3,c4,c2,g2,c4]]
+    [- [c3,e3,c4,c2,g2,c4] - [c#3,f3,c#2,c4,c4] - [c#3,f3,c4,c#2,c4] - [d#3,g3,c4,d#2,c4]] [- [f3,c4,d#2,c4] d#3 f3 c4 a#3 c4 -] [[c#3,f3,c#2,c4,c4,g#3] - - [c#3,f3,c4,c#2,c4,g#3] - - - [c#3,f3,c4,c#2,c4,g#3]] [- [c3,e3,c4,c2,c4,g2,g3,g3] - - - [d#3,g3,c4,d#2,c4,a#3] - -]
+    [- [c#3,f3,c4,c#2,c4,g#3] - - [c#3,f3,c4,c#2,c4,g#3] - - -] [- - - [c#3,f3,c4,c#2,c4,g#3] - [c3,e3,c4,c2,c4,g2,g3,g3] - -] [- [d#3,g3,c4,d#2,c4,a#3] - - - [c#3,f3,c4,c#2,c4,g#3] - -] [[c#3,f3,c4,c#2,c4,g#3] - - - - - - [c#3,f3,c4,c#2,c4,g#3]]
+    [- [c3,e3,c4,c2,c4,g2,g3,g3] - - - [d#3,g3,c4,d#2,c4,a#3] - -] [- [c#3,f3,c4,c#2,c4,g#3] - - [c#3,f3,c4,c#2,c4,g#3] - - -] [- - - [c#3,f3,c4,c#2,c4,g#3] - [c3,e3,c4,c2,c4,g2,g3,g3] - -] [- [d#3,g3,c4,d#2,c4,a#3] - - - [c3,f3,c4,f2,c4,a3] - -]>`)
+  .s("sawtooth")
+  .orbit(4)
+  .detune(.19)
+  .unison(2)
+  .lpf(200)
+  //.lpenv(1)
+  //.lpq(2)
+  .attack(.1)
+  .sustain(.50)
+  .release(1.5)
+  .decay(.45)
+  //.distort("1:.7")
+  ._pianoroll()
+  ._scope()
+
+_$: note(`<
+    - - - -
+    - [- - b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
+    [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 -]>`)
+  .s("bd:14").gain(.4)._scope()
+
+_$: note(`<
+    - - - -
+    - - - -
+    - - - -
+    - - - -
+    - [- - - - - - - - - - - - - - - - f4 f4 f4 f4 - - - - c4 c4 c4 c4 - - - - f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 - - -] [[f4,f4,f4,f4] f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 [f4,f4] f4 f4 f4 f4 f4 f4 f4 f4 f4 - - - - - - - f4 - - - - - - -] [- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - f4 f4 f4 f4 - - - - c4 c4 c4 c4 - - - -]
+    [f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 - - -] [[f4,f4,f4,f4] f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 - - - - - - - f4 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -] [- - - - - - - - - - - - - - - - f4 f4 f4 f4 - - - - c4 c4 c4 c4 - - - - f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 - - -] [[f4,f4,f4,f4] f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 - - - - - - - f4 - - - - - - - - - - - - - - - - - - - - - - -]
+    [- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - f4 f4 f4 f4 - - - - c4 c4 c4 c4 - - - -] [f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 - - -] [[f4,f4,f4,f4] f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 f4 - - - - - - - f4 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -] [- - - - - - - - - - - - - - - - c4 c4 c4 c4 - - - - a#3 a#3 a#3 a#3 - - - - c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 - - - - - - - c#4 - - - - - - -]
+    [c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 - - - - - - - c4 - - - - - - -] [- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - c4 c4 c4 c4 - - - - a#3 a#3 a#3 a#3 - - - -] [c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 - - - - - - - c#4 - - - - - - - c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 - - -] [[c4,c4,c4,c4] c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 - - - - - - - c4 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -]
+    [- - - - - - - - - - - - - - - - c4 c4 c4 c4 - - - - a#3 a#3 a#3 a#3 - - - - c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 - - - - - - - c#4 - - - - - - -] [c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 - - - - - - - c4 - - - - - - -] [- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - c4 c4 c4 c4 - - - - a#3 a#3 a#3 a#3 - - - -] [c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 c#4 - - - - - - - c#4 - - - - - - - c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 - - -]
+    [[c4,c4,c4,c4] c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 c4 - - - - - - - c4 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -]>`)
+  .s("gm_voice_oohs")
+  .lpf(100)
+  .release(1.5)
+  .distort("1.5:.5")
+  ._pianoroll()
+  ._scope()
