@@ -25,12 +25,14 @@ $: note(`<
   .s("sawtooth")
   .detune(.19)
   .unison(2)
-  .lpf(100)
-  .lpq(2)
+  .lpf(200)
+  //.lpenv(1)
+  //.lpq(2)
   .attack(.1)
-  .sustain(.45)
-  .decay(.55)
-  .distort("2:.3")
+  .sustain(.50)
+  .release(1.5)
+  .decay(.45)
+  //.distort("1:.7")
   ._pianoroll()
   ._scope()
 
@@ -47,7 +49,7 @@ $: note(`<
     [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
     [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1]
     [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 b1] [b1 b1 b1 -]>`)
-  .s("bd:14").gain(.3)._scope()
+  .s("bd:14").gain(.4)._scope()
 
 $: note(`<
     - - - -
@@ -63,6 +65,6 @@ $: note(`<
   .s("gm_voice_oohs")
   .lpf(100)
   .release(1.5)
-  .distort("1.5:.3")
+  .distort("1.5:.5")
   ._pianoroll()
   ._scope()
